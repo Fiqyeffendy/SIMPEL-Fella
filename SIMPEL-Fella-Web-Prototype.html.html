@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIMPEL-Fella | Swimming Management System</title>
+
+  <style>
+    :root {
+      --aqua: #30cfc6;
+      --aqua-dark: #20b8b0;
+      --navy: #25384a;
+      --text: #111827;
+      --muted: #667085;
+      --soft-bg: #f5fbfb;
+      --line: #e5e7eb;
+      --card: #ffffff;
+      --orange: #ffad3d;
+      --green: #12b981;
+      --red: #ef4444;
+      --shadow: 0 8px 26px rgba(15, 23, 42, 0.10);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: var(--soft-bg);
+      color: var(--text);
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+    }
+
+    /* LOGIN */
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: linear-gradient(115deg, #31d0c6 0%, #2b8791 48%, #24384a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wave {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      opacity: 0.18;
+      background:
+        radial-gradient(80px 20px at 40px 30px, transparent 44px, rgba(255,255,255,.7) 45px, transparent 47px) repeat-x;
+      background-size: 240px 70px;
+    }
+
+    .wave.one { top: 42px; }
+    .wave.two { top: 100px; opacity: 0.14; }
+    .wave.three { top: 158px; opacity: 0.12; }
+
+    .login-card {
+      width: 520px;
+      max-width: 100%;
+      background: #fff;
+      border-radius: 28px;
+      padding: 56px;
+      box-shadow: 0 24px 65px rgba(0,0,0,.16);
+      z-index: 2;
+    }
+
+    .logo-circle {
+      width: 94px;
+      height: 94px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 24px;
+      background: #e6faf8;
+      color: var(--aqua);
+      font-size: 42px;
+      font-weight: 800;
+    }
+
+    .login-card h1 {
+      text-align: center;
+      font-size: 31px;
+      margin-bottom: 14px;
+    }
+
+    .login-card .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 17px;
+      margin-bottom: 42px;
+    }
+
+    .field {
+      margin-bottom: 22px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 17px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 58px;
+      border: 1px solid #d9dde3;
+      border-radius: 16px;
+      background: #f7f7f9;
+      padding: 0 18px;
+      font-size: 18px;
+      outline: none;
+    }
+
+    .sign-btn {
+      width: 100%;
+      height: 58px;
+      border-radius: 16px;
+      background: var(--aqua);
+      color: white;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 14px 20px rgba(48,207,198,.24);
+      margin-top: 4px;
+    }
+
+    .sign-btn:hover {
+      background: var(--aqua-dark);
+    }
+
+    /* APP LAYOUT */
+    .app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 300px;
+      background: #fbfcfd;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 34px 34px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--aqua);
+      color: white;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .brand h2 {
+      font-size: 23px;
+      color: #21364a;
+    }
+
+    .brand p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .nav {
+      padding: 20px 18px;
+      flex: 1;
+    }
+
+    .nav button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: transparent;
+      color: #24384a;
+      font-size: 18px;
+      padding: 17px 20px;
+      border-radius: 24px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .nav button.active,
+    .nav button:hover {
+      background: var(--aqua);
+      color: white;
+    }
+
+    .profile {
+      padding: 20px 18px 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .userbox {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #f6f7f8;
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .userbox .small-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #24384a;
+      border: 2px solid #24384a;
+    }
+
+    .userbox strong {
+      font-size: 16px;
+      color: #24384a;
+    }
+
+    .userbox p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .logout {
+      background: transparent;
+      color: #24384a;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 10px 18px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .main {
+      margin-left: 300px;
+      padding: 44px 38px 50px;
+    }
+
+    .page-title {
+      font-size: 30px;
+      margin-bottom: 14px;
+    }
+
+    .page-subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 38px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      margin-bottom: 38px;
+    }
+
+    .stat-card,
+    .panel,
+    .student-card,
+    .history-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 3px 8px rgba(0,0,0,.06);
+    }
+
+    .stat-card {
+      height: 202px;
+      padding: 28px 30px;
+    }
+
+    .icon-badge {
+      width: 58px;
+      height: 58px;
+      border-radius: 23px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 28px;
+      margin-bottom: 26px;
+    }
+
+    .bg-aqua { background: var(--aqua); }
+    .bg-navy { background: var(--navy); }
+    .bg-orange { background: var(--orange); }
+    .bg-green { background: var(--green); }
+
+    .stat-card h3 {
+      font-size: 37px;
+      margin-bottom: 6px;
+    }
+
+    .stat-card p {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .panel {
+      padding: 28px 30px;
+    }
+
+    .panel h2 {
+      font-size: 24px;
+      margin-bottom: 22px;
+    }
+
+    .alert-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      margin-bottom: 22px;
+    }
+
+    .alert-title span {
+      color: var(--orange);
+    }
+
+    .session-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px;
+      border-radius: 22px;
+      background: #fff8ef;
+      border: 1px solid #ffe0b0;
+      margin-bottom: 14px;
+    }
+
+    .session-item strong {
+      font-size: 18px;
+    }
+
+    .session-item p {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .pill {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .pill.orange {
+      background: var(--orange);
+      color: #7c3f00;
+    }
+
+    .pill.pool {
+      background: #d9f8f5;
+      color: var(--aqua-dark);
+    }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      background: #eef0f4;
+      border-radius: 24px;
+      padding: 22px 26px;
+      margin-bottom: 16px;
+    }
+
+    .time-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .time {
+      font-size: 17px;
+    }
+
+    .schedule-item strong {
+      font-size: 18px;
+    }
+
+    .schedule-item p {
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .chart {
+      height: 250px;
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .chart svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: -4px;
+    }
+
+    /* TABLE AND FORM */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .search {
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0 15px;
+      min-width: 260px;
+    }
+
+    .primary {
+      background: var(--aqua);
+      color: #fff;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-weight: 800;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 12px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 0 14px;
+    }
+
+    td {
+      background: #f8fafc;
+      padding: 17px 14px;
+      color: #24384a;
+    }
+
+    td:first-child { border-radius: 16px 0 0 16px; }
+    td:last-child { border-radius: 0 16px 16px 0; }
+
+    .badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .ok { background: #dcfce7; color: #167447; }
+    .warn { background: #fff2d9; color: #b45309; }
+    .bad { background: #fee2e2; color: #b91c1c; }
+    .info { background: #dff9f7; color: #14847d; }
+
+    .actions button {
+      padding: 8px 11px;
+      border-radius: 10px;
+      margin-right: 6px;
+      background: #e7f9f7;
+      color: #14847d;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .form-grid input,
+    .form-grid select,
+    .form-grid textarea {
+      width: 100%;
+      height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0 14px;
+      background: #fafafa;
+      font-size: 15px;
+    }
+
+    .form-grid textarea {
+      grid-column: 1 / -1;
+      height: 88px;
+      padding-top: 14px;
+    }
+
+    /* STUDENT */
+    .student-layout {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .back-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .back {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: var(--shadow);
+      font-size: 24px;
+    }
+
+    .student-card {
+      padding: 28px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .next-session {
+      background: #e8fbf9;
+      border: 1px solid #bff3ee;
+      border-radius: 22px;
+      padding: 24px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .next-session h3 {
+      color: var(--aqua-dark);
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+
+    .donut-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 28px 0 35px;
+    }
+
+    .donut {
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: conic-gradient(var(--aqua) 0 58%, #e9e9ee 58% 100%);
+      display: grid;
+      place-items: center;
+    }
+
+    .donut-inner {
+      width: 168px;
+      height: 168px;
+      border-radius: 50%;
+      background: white;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .donut-inner strong {
+      font-size: 42px;
+      color: var(--aqua);
+      font-weight: 400;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .mini {
+      background: #eef0f4;
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .mini.green {
+      background: #e3f7f0;
+    }
+
+    .mini strong {
+      font-size: 28px;
+    }
+
+    .mini p {
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .history-card {
+      padding: 24px 24px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .history-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .history-date {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .history-meta {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .notes {
+      background: #e9ebf0;
+      border-radius: 20px;
+      padding: 18px;
+      color: #111827;
+    }
+
+    .notes span {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 1100px) {
+      .stats, .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .sidebar {
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 260px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 24px;
+      }
+
+      .stats,
+      .grid-2,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-item {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: 38px 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- LOGIN PAGE -->
+  <section class="login-page" id="loginPage">
+    <div class="wave one"></div>
+    <div class="wave two"></div>
+    <div class="wave three"></div>
+
+    <div class="login-card">
+      <div class="logo-circle">☺</div>
+      <h1>SIMPEL-Fella</h1>
+      <p class="subtitle">Swimming Management System</p>
+
+      <div class="field">
+        <label>Login As</label>
+        <select id="roleSelect">
+          <option value="admin">Admin</option>
+          <option value="pelatih">Pelatih</option>
+          <option value="siswa">Siswa/Orang Tua</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Username</label>
+        <input placeholder="Enter username" />
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="Enter password" />
+      </div>
+
+      <button class="sign-btn" onclick="signIn()">Sign In</button>
+    </div>
+  </section>
+
+  <!-- ADMIN APP -->
+  <section class="app" id="adminApp">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">☺</div>
+        <div>
+          <h2>SIMPEL-Fella</h2>
+          <p>Admin Panel</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="active" onclick="showAdminPage('dashboard', this)">▦ Dashboard</button>
+        <button onclick="showAdminPage('students', this)">♙ Students</button>
+        <button onclick="showAdminPage('coaches', this)">♟ Coaches</button>
+        <button onclick="showAdminPage('schedule', this)">▣ Schedule</button>
+        <button onclick="showAdminPage('attendance', this)">☑ Attendance</button>
+        <button onclick="showAdminPage('sessions', this)">◔ Sessions</button>
+        <button onclick="showAdminPage('reports', this)">▥ Reports</button>
+      </nav>
+
+      <div class="profile">
+        <div class="userbox">
+          <div class="small-icon">☻</div>
+          <div>
+            <strong>Admin User</strong>
+            <p>admin@simpel.com</p>
+          </div>
+        </div>
+        <button class="logout" onclick="logout()">↪ Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- DASHBOARD -->
+      <div id="admin-dashboard" class="admin-page">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Welcome back! Here's your overview</p>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="icon-badge bg-aqua">♙</div>
+            <h3>156</h3>
+            <p>Active Students</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="icon-badge bg-navy">♟</div>
+            <h3>12</h3>
+            <p>Total Coaches</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="icon-badge bg-orange">▣</div>
+            <h3>24</h3>
+            <p>Today's Schedule</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="icon-badge bg-green">☑</div>
+            <h3>18/24</h3>
+            <p>Today's Attendance</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h2 class="alert-title"><span>⚠</span> Critical Alert - Low Sessions</h2>
+
+            <div class="session-item">
+              <div>
+                <strong>Ahmad Fauzi</strong>
+                <p>Ibu Siti</p>
+              </div>
+              <div>
+                <span class="pill orange">2 sessions left</span>
+                <p style="text-align:right;">Bronze</p>
+              </div>
+            </div>
+
+            <div class="session-item">
+              <div>
+                <strong>Budi Santoso</strong>
+                <p>Pak Budi</p>
+              </div>
+              <div>
+                <span class="pill orange">1 sessions left</span>
+                <p style="text-align:right;">Silver</p>
+              </div>
+            </div>
+
+            <div class="session-item">
+              <div>
+                <strong>Citra Dewi</strong>
+                <p>Ibu Dewi</p>
+              </div>
+              <div>
+                <span class="pill orange">3 sessions left</span>
+                <p style="text-align:right;">Bronze</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Today's Schedule</h2>
+
+            <div class="schedule-item">
+              <div>
+                <div class="time-label">Time</div>
+                <div class="time">08:00</div>
+              </div>
+              <div>
+                <strong>Ahmad Fauzi</strong>
+                <p>Coach Mike</p>
+              </div>
+              <span class="pill pool">Pool A</span>
+            </div>
+
+            <div class="schedule-item">
+              <div>
+                <div class="time-label">Time</div>
+                <div class="time">09:00</div>
+              </div>
+              <div>
+                <strong>Budi Santoso</strong>
+                <p>Coach Sarah</p>
+              </div>
+              <span class="pill pool">Pool B</span>
+            </div>
+
+            <div class="schedule-item">
+              <div>
+                <div class="time-label">Time</div>
+                <div class="time">10:00</div>
+              </div>
+              <div>
+                <strong>Citra Dewi</strong>
+                <p>Coach Mike</p>
+              </div>
+              <span class="pill pool">Pool A</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Weekly Training Activity</h2>
+          <div class="chart">
+            <svg viewBox="0 0 900 240" preserveAspectRatio="none">
+              <line x1="30" y1="205" x2="880" y2="205" stroke="#cbd5e1"/>
+              <line x1="30" y1="50" x2="30" y2="205" stroke="#cbd5e1"/>
+              <g stroke="#e5e7eb" stroke-dasharray="3 3">
+                <line x1="30" y1="165" x2="880" y2="165"/>
+                <line x1="30" y1="125" x2="880" y2="125"/>
+                <line x1="30" y1="85" x2="880" y2="85"/>
+                <line x1="30" y1="45" x2="880" y2="45"/>
+              </g>
+              <path d="M30 130 C120 105,150 110,190 105 S300 150,340 140 S470 120,510 110 S650 80,710 75 S810 78,880 86" fill="none" stroke="#30cfc6" stroke-width="4"/>
+              <g fill="#30cfc6">
+                <circle cx="30" cy="130" r="6"/>
+                <circle cx="190" cy="105" r="6"/>
+                <circle cx="340" cy="140" r="6"/>
+                <circle cx="510" cy="110" r="6"/>
+                <circle cx="710" cy="75" r="6"/>
+                <circle cx="880" cy="86" r="6"/>
+              </g>
+            </svg>
+          </div>
+          <div class="chart-labels">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div id="admin-students" class="admin-page" style="display:none;">
+        <h1 class="page-title">Students</h1>
+        <p class="page-subtitle">Manage student data and package sessions</p>
+
+        <div class="panel">
+          <div class="toolbar">
+            <input class="search" placeholder="Search student..." />
+            <button class="primary">+ Add Student</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Parent</th>
+                <th>Package</th>
+                <th>Total</th>
+                <th>Left</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ahmad Fauzi</td>
+                <td>Ibu Siti</td>
+                <td>Bronze</td>
+                <td>12</td>
+                <td>2</td>
+                <td><span class="badge warn">Low Session</span></td>
+                <td class="actions"><button>Edit</button><button>Detail</button></td>
+              </tr>
+              <tr>
+                <td>Rania Putri</td>
+                <td>Pak Andi</td>
+                <td>Silver</td>
+                <td>16</td>
+                <td>9</td>
+                <td><span class="badge ok">Active</span></td>
+                <td class="actions"><button>Edit</button><button>Detail</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- COACHES -->
+      <div id="admin-coaches" class="admin-page" style="display:none;">
+        <h1 class="page-title">Coaches</h1>
+        <p class="page-subtitle">Manage coach data</p>
+
+        <div class="panel">
+          <div class="toolbar">
+            <input class="search" placeholder="Search coach..." />
+            <button class="primary">+ Add Coach</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>WhatsApp</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Coach Mike</td>
+                <td>08xxxxxxxxxx</td>
+                <td>Sidoarjo</td>
+                <td><span class="badge ok">Active</span></td>
+                <td class="actions"><button>Edit</button><button>Detail</button></td>
+              </tr>
+              <tr>
+                <td>Coach Sarah</td>
+                <td>08xxxxxxxxxx</td>
+                <td>Surabaya</td>
+                <td><span class="badge ok">Active</span></td>
+                <td class="actions"><button>Edit</button><button>Detail</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SCHEDULE -->
+      <div id="admin-schedule" class="admin-page" style="display:none;">
+        <h1 class="page-title">Schedule</h1>
+        <p class="page-subtitle">Create and validate training schedules</p>
+
+        <div class="panel" style="margin-bottom:28px;">
+          <h2>Add Schedule</h2>
+
+          <div class="form-grid">
+            <select>
+              <option>Choose Student</option>
+              <option>Ahmad Fauzi</option>
+            </select>
+            <select>
+              <option>Choose Coach</option>
+              <option>Coach Mike</option>
+            </select>
+            <input type="date" />
+            <select>
+              <option>Pool A</option>
+              <option>Pool B</option>
+            </select>
+            <input type="time" />
+            <input type="time" />
+            <textarea placeholder="Notes"></textarea>
+          </div>
+
+          <br />
+          <button class="primary">Save Schedule</button>
+        </div>
+
+        <div class="panel">
+          <h2>Schedule List</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Student</th>
+                <th>Coach</th>
+                <th>Pool</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>May 15, 2026</td>
+                <td>08:00 - 09:00</td>
+                <td>Ahmad Fauzi</td>
+                <td>Coach Mike</td>
+                <td>Pool A</td>
+                <td><span class="badge info">Scheduled</span></td>
+              </tr>
+              <tr>
+                <td>May 15, 2026</td>
+                <td>09:00 - 10:00</td>
+                <td>Budi Santoso</td>
+                <td>Coach Sarah</td>
+                <td>Pool B</td>
+                <td><span class="badge info">Scheduled</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div id="admin-attendance" class="admin-page" style="display:none;">
+        <h1 class="page-title">Attendance</h1>
+        <p class="page-subtitle">Monitor attendance input from coaches</p>
+
+        <div class="panel">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Student</th>
+                <th>Coach</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>May 10, 2026</td>
+                <td>Ahmad Fauzi</td>
+                <td>Coach Mike</td>
+                <td><span class="badge ok">Present</span></td>
+                <td>Great progress on freestyle technique</td>
+              </tr>
+              <tr>
+                <td>May 6, 2026</td>
+                <td>Ahmad Fauzi</td>
+                <td>Coach Mike</td>
+                <td><span class="badge warn">Permit</span></td>
+                <td>Sick leave</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SESSIONS -->
+      <div id="admin-sessions" class="admin-page" style="display:none;">
+        <h1 class="page-title">Session Monitoring</h1>
+        <p class="page-subtitle">Track remaining sessions</p>
+
+        <div class="panel">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Package</th>
+                <th>Total</th>
+                <th>Completed</th>
+                <th>Left</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ahmad Fauzi</td>
+                <td>Bronze</td>
+                <td>12</td>
+                <td>10</td>
+                <td>2</td>
+                <td><span class="badge warn">Low</span></td>
+              </tr>
+              <tr>
+                <td>Deni Pratama</td>
+                <td>Gold</td>
+                <td>20</td>
+                <td>9</td>
+                <td>11</td>
+                <td><span class="badge ok">Safe</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div id="admin-reports" class="admin-page" style="display:none;">
+        <h1 class="page-title">Reports</h1>
+        <p class="page-subtitle">Operational reports</p>
+
+        <div class="panel">
+          <div class="form-grid">
+            <input type="date" />
+            <input type="date" />
+            <select><option>All Students</option></select>
+            <select><option>All Coaches</option></select>
+          </div>
+
+          <br />
+          <button class="primary">Show Report</button>
+          <button class="primary">Export</button>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Report Type</th>
+                <th>Description</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Schedule Report</td>
+                <td>Training schedule data</td>
+                <td><span class="badge ok">Available</span></td>
+              </tr>
+              <tr>
+                <td>Attendance Report</td>
+                <td>Student attendance data</td>
+                <td><span class="badge ok">Available</span></td>
+              </tr>
+              <tr>
+                <td>Remaining Sessions</td>
+                <td>Student package session data</td>
+                <td><span class="badge ok">Available</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- STUDENT APP -->
+  <section class="app" id="studentApp">
+    <main class="main" style="margin-left:0;">
+      <div class="student-layout">
+        <div class="back-row">
+          <button class="back" onclick="logout()">←</button>
+          <div>
+            <h1>Student Dashboard</h1>
+            <p class="page-subtitle" style="margin-bottom:0;">Ahmad Fauzi</p>
+          </div>
+        </div>
+
+        <div class="student-card">
+          <div style="display:flex;gap:14px;align-items:center;">
+            <div class="icon-badge bg-aqua" style="margin:0;">▣</div>
+            <div>
+              <h2>Next Session</h2>
+              <p class="page-subtitle" style="margin:4px 0 0;">Don't miss it!</p>
+            </div>
+          </div>
+
+          <div class="next-session">
+            <div>
+              <h3>Tomorrow, May 15</h3>
+              <p><b>Coach:</b> Coach Mike</p>
+              <br />
+              <p><b>Location:</b> Pool A</p>
+            </div>
+            <span class="pill pool" style="height:max-content;color:white;background:var(--aqua);">08:00 AM</span>
+          </div>
+        </div>
+
+        <div class="student-card">
+          <h2>Package Progress</h2>
+
+          <div class="donut-wrap">
+            <div class="donut">
+              <div class="donut-inner">
+                <div>
+                  <strong>7</strong>
+                  <p class="page-subtitle" style="margin:0;font-size:16px;">sessions left</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-stats">
+            <div class="mini">
+              <strong>12</strong>
+              <p>Total Sessions</p>
+            </div>
+            <div class="mini green">
+              <strong style="color:var(--green);">5</strong>
+              <p>Completed</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="student-card">
+          <h2>Attendance History</h2>
+          <br />
+
+          <div class="history-card">
+            <div class="history-head">
+              <div>
+                <div class="history-date">▣ May 10, 2026</div>
+                <div class="history-meta">◷ 08:00 · Coach Mike</div>
+              </div>
+              <span class="badge ok">✓ Present</span>
+            </div>
+            <div class="notes"><span>Coach Notes:</span>Great progress on freestyle technique</div>
+          </div>
+
+          <div class="history-card">
+            <div class="history-head">
+              <div>
+                <div class="history-date">▣ May 8, 2026</div>
+                <div class="history-meta">◷ 09:00 · Coach Sarah</div>
+              </div>
+              <span class="badge ok">✓ Present</span>
+            </div>
+            <div class="notes"><span>Coach Notes:</span>Improved breathing control</div>
+          </div>
+
+          <div class="history-card">
+            <div class="history-head">
+              <div>
+                <div class="history-date">▣ May 6, 2026</div>
+                <div class="history-meta">◷ 08:00 · Coach Mike</div>
+              </div>
+              <span class="badge warn">▧ Permit</span>
+            </div>
+            <div class="notes"><span>Coach Notes:</span>Sick leave</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- COACH APP -->
+  <section class="app" id="coachApp">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">☺</div>
+        <div>
+          <h2>SIMPEL-Fella</h2>
+          <p>Coach Panel</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="active">▦ Dashboard</button>
+        <button>▣ My Schedule</button>
+        <button>☑ Attendance</button>
+        <button>▥ History</button>
+      </nav>
+
+      <div class="profile">
+        <div class="userbox">
+          <div class="small-icon">☻</div>
+          <div>
+            <strong>Coach Mike</strong>
+            <p>coach@simpel.com</p>
+          </div>
+        </div>
+        <button class="logout" onclick="logout()">↪ Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <h1 class="page-title">Coach Dashboard</h1>
+      <p class="page-subtitle">Today training schedule and attendance input</p>
+
+      <div class="grid-2">
+        <div class="panel">
+          <h2>Today's Schedule</h2>
+
+          <div class="schedule-item">
+            <div>
+              <div class="time-label">Time</div>
+              <div class="time">08:00</div>
+            </div>
+            <div>
+              <strong>Ahmad Fauzi</strong>
+              <p>Pool A</p>
+            </div>
+            <span class="pill pool">Input</span>
+          </div>
+
+          <div class="schedule-item">
+            <div>
+              <div class="time-label">Time</div>
+              <div class="time">10:00</div>
+            </div>
+            <div>
+              <strong>Citra Dewi</strong>
+              <p>Pool A</p>
+            </div>
+            <span class="pill pool">Input</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Input Attendance</h2>
+
+          <div class="form-grid" style="grid-template-columns:1fr;">
+            <select>
+              <option>Ahmad Fauzi - 08:00</option>
+              <option>Citra Dewi - 10:00</option>
+            </select>
+            <select>
+              <option>Present</option>
+              <option>Absent</option>
+              <option>Permit</option>
+            </select>
+            <textarea placeholder="Coach notes"></textarea>
+          </div>
+
+          <br />
+          <button class="primary">Save Attendance</button>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <script>
+    function signIn() {
+      const role = document.getElementById('roleSelect').value;
+
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('adminApp').style.display = 'none';
+      document.getElementById('coachApp').style.display = 'none';
+      document.getElementById('studentApp').style.display = 'none';
+
+      if (role === 'admin') {
+        document.getElementById('adminApp').style.display = 'block';
+      }
+
+      if (role === 'pelatih') {
+        document.getElementById('coachApp').style.display = 'block';
+      }
+
+      if (role === 'siswa') {
+        document.getElementById('studentApp').style.display = 'block';
+      }
+    }
+
+    function logout() {
+      document.getElementById('loginPage').style.display = 'flex';
+      document.getElementById('adminApp').style.display = 'none';
+      document.getElementById('coachApp').style.display = 'none';
+      document.getElementById('studentApp').style.display = 'none';
+    }
+
+    function showAdminPage(page, btn) {
+      document.querySelectorAll('.admin-page').forEach(function(item) {
+        item.style.display = 'none';
+      });
+
+      document.getElementById('admin-' + page).style.display = 'block';
+
+      document.querySelectorAll('#adminApp .nav button').forEach(function(button) {
+        button.classList.remove('active');
+      });
+
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
